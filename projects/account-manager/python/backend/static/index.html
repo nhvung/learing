@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Manager</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .btn-home{display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:#6e6e73;font-size:.82rem;padding:6px 12px;border-radius:980px;background:#f5f5f7;transition:background .15s}
+    .btn-home:hover{background:#e8e8ed;color:#1d1d1f}
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <a href="/" class="btn-home">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        Home
+      </a>
+      <h1>Account Manager</h1>
+      <div class="header-actions">
+        <button id="btn-random" class="btn btn-secondary">Random</button>
+        <button id="btn-empty"  class="btn btn-danger">Empty</button>
+        <button id="btn-new"    class="btn btn-primary">+ New Account</button>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <input type="text"  id="filter-search"     placeholder="Search name or email…" />
+      <select id="filter-status">
+        <option value="!3" selected>Active + Inactive</option>
+        <option value="">All</option>
+        <option value="1">Active</option>
+        <option value="2">Inactive</option>
+        <option value="3">Deleted</option>
+      </select>
+      <select             id="filter-date-field">
+        <option value="">No date filter</option>
+        <option value="created_time">Created date</option>
+        <option value="updated_time">Updated date</option>
+      </select>
+      <input type="date"  id="filter-date-from" title="From" />
+      <input type="date"  id="filter-date-to"   title="To"   />
+      <button id="btn-clear-filters" class="btn btn-secondary">Clear</button>
+    </div>
+
+    <!-- Bulk action bar -->
+    <div id="bulk-bar" class="hidden">
+      <span id="selected-count"></span>
+      <button id="btn-bulk-delete" class="btn btn-danger">Delete Selected</button>
+    </div>
+
+    <!-- Error banner -->
+    <div id="error-banner" class="hidden"></div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="hidden">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table id="accounts-table">
+        <thead>
+          <tr>
+            <th class="col-check"><input type="checkbox" id="check-all" /></th>
+            <th>ID</th>
+            <th class="sortable" data-col="name">Name <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="email">Email <span class="sort-icon"></span></th>
+            <th>Address</th>
+            <th>Status</th>
+            <th class="sortable" data-col="created_time">Created <span class="sort-icon"></span></th>
+            <th class="sortable" data-col="updated_time">Updated <span class="sort-icon"></span></th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="accounts-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination bar -->
+    <div id="pagination-bar">
+      <span id="page-info"></span>
+      <div class="page-nav">
+        <button id="btn-prev" class="btn btn-secondary">‹</button>
+        <span   id="page-label"></span>
+        <button id="btn-next" class="btn btn-secondary">›</button>
+      </div>
+      <div class="per-page">
+        Per page:
+        <select id="per-page-select">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="100">100</option>
+          <option value="200">200</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Create / Edit modal -->
+  <div id="modal-overlay" class="hidden">
+    <div class="modal">
+      <h2 id="modal-title">New Account</h2>
+      <form id="account-form">
+        <input type="hidden" id="form-id" />
+        <div class="field">
+          <label>Name *</label>
+          <input type="text" id="form-name" required />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="form-email" />
+        </div>
+        <div class="field">
+          <label>Address</label>
+          <input type="text" id="form-address" />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="form-status">
+            <option value="1">Active</option>
+            <option value="2">Inactive</option>
+          </select>
+        </div>
+        <div id="form-error" class="hidden"></div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm modal -->
+  <div id="confirm-overlay" class="hidden">
+    <div class="modal modal-sm">
+      <h2>Confirm Delete</h2>
+      <p id="confirm-msg" class="confirm-msg"></p>
+      <div class="modal-actions">
+        <button id="btn-confirm-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="btn-confirm-ok"     class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

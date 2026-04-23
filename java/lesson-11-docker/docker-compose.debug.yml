@@ -1,0 +1,22 @@
+version: "3.9"
+
+# Debug mode: exposes port 5005 and suspends the JVM until the debugger attaches.
+#
+# Usage:
+#   docker-compose -f docker-compose.debug.yml up --build
+#   Then attach VS Code with: "L11 ▶ Docker Remote Debug (attach)"
+
+services:
+  app:
+    build:
+      context: .
+      target: builder          # use the JDK stage so the debugger works
+    image: java-course-app:debug
+    environment:
+      - APP_VERSION=1.0-DEBUG
+    command: >
+      java
+      -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005
+      -cp out App
+    ports:
+      - "5005:5005"            # JDWP debug port

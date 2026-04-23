@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account Manager</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+      background: #fff;
+      color: #1d1d1f;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: rgba(255, 255, 255, .85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, .08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 24px;
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+    }
+
+    .nav-title {
+      font-size: .9rem;
+      font-weight: 600;
+      color: #1d1d1f;
+      text-decoration: none;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .82rem;
+      color: #0071e3;
+      text-decoration: none;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+
+    .nav-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 64px;
+      background: #fff;
+    }
+
+    .hero-eyebrow {
+      font-size: .9rem;
+      font-weight: 500;
+      color: #6e6e73;
+      letter-spacing: .02em;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.05;
+      color: #1d1d1f;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #6e6e73;
+      margin-top: 14px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    /* ── Page sections ── */
+    .section {
+      padding: 0 24px 80px;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #6e6e73;
+      margin-bottom: 20px;
+    }
+
+    /* ── Doc tiles ── */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .doc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tile {
+      background: #f5f5f7;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .tile-head {
+      padding: 20px 24px 14px;
+      border-bottom: 1px solid rgba(0, 0, 0, .06);
+    }
+
+    .tile-head h3 {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: #6e6e73;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td,
+    th {
+      padding: 10px 24px;
+      font-size: .83rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(0, 0, 0, .05);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    th {
+      font-size: .72rem;
+      font-weight: 600;
+      color: #6e6e73;
+      background: transparent;
+    }
+
+    td {
+      color: #1d1d1f;
+    }
+
+    td:first-child {
+      font-weight: 500;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-size: .78rem;
+      background: rgba(0, 0, 0, .06);
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: .65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 5px;
+      letter-spacing: .04em;
+    }
+
+    .get {
+      background: #e8f4fd;
+      color: #0071e3;
+    }
+
+    .post {
+      background: #e8f9ee;
+      color: #1d7a45;
+    }
+
+    .put {
+      background: #fdf5e8;
+      color: #8a6200;
+    }
+
+    .delete {
+      background: #fde8e8;
+      color: #c0392b;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      max-width: 1100px;
+      margin: 0 auto 64px;
+      border: none;
+      border-top: 1px solid #d2d2d7;
+    }
+
+    /* ── Lang cards ── */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 800px) {
+      .lang-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .lang-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .lang-card {
+      background: #f5f5f7;
+      border-radius: 20px;
+      padding: 28px 20px 24px;
+      text-decoration: none;
+      color: #1d1d1f;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      transition: background .2s;
+      position: relative;
+    }
+
+    .lang-card:hover {
+      background: #e8e8ed;
+    }
+
+    .lang-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .lang-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1d1d1f;
+    }
+
+    .lang-stack {
+      font-size: .75rem;
+      color: #6e6e73;
+      line-height: 1.5;
+    }
+
+    .lang-arrow {
+      margin-top: auto;
+      font-size: .78rem;
+      color: #0071e3;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .lang-arrow svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid #d2d2d7;
+      padding: 24px;
+      color: #6e6e73;
+      font-size: .75rem;
+      text-align: center;
+    }
+
+    footer a {
+      color: #0071e3;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-title" href="/">Account Manager</a>
+      <a class="nav-link" href="/docs/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+        Course Docs
+      </a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-eyebrow">Fullstack · 5 Languages · 1 API</p>
+    <h1>Account Manager</h1>
+    <p>The same CRUD app built in Node.js, Go, Java, .NET, and Python — identical REST API, shared PostgreSQL, and one
+      frontend.</p>
+  </section>
+
+  <div class="section">
+    <div class="section-inner">
+
+      <p class="section-label">Documentation</p>
+      <div class="doc-grid">
+
+        <div class="tile">
+          <div class="tile-head">
+            <h3>Account Schema</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>id</code></td>
+                <td>SERIAL</td>
+                <td>Auto-increment PK</td>
+              </tr>
+              <tr>
+                <td><code>name</code></td>
+                <td>VARCHAR(255)</td>
+                <td>Required</td>
+              </tr>
+              <tr>
+                <td><code>email</code></td>
+                <td>VARCHAR(255)</td>
+                <td>Optional</td>
+              </tr>
+              <tr>
+                <td><code>address</code></td>
+                <td>TEXT</td>
+                <td>Optional</td>
+              </tr>
+              <tr>
+                <td><code>status</code></td>
+                <td>SMALLINT</td>
+                <td>1 Active · 2 Inactive · 3 Deleted</td>
+              </tr>
+              <tr>
+                <td><code>created_time</code></td>
+                <td>BIGINT</td>
+                <td>Unix ms</td>
+              </tr>
+              <tr>
+                <td><code>updated_time</code></td>
+                <td>BIGINT</td>
+                <td>Unix ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tile">
+          <div class="tile-head">
+            <h3>REST API</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge get">GET</span></td>
+                <td><code>/api/accounts</code></td>
+                <td>List active + inactive</td>
+              </tr>
+              <tr>
+                <td><span class="badge get">GET</span></td>
+                <td><code>/api/accounts/:id</code></td>
+                <td>Get one account</td>
+              </tr>
+              <tr>
+                <td><span class="badge post">POST</span></td>
+                <td><code>/api/accounts</code></td>
+                <td>Create account</td>
+              </tr>
+              <tr>
+                <td><span class="badge put">PUT</span></td>
+                <td><code>/api/accounts/:id</code></td>
+                <td>Partial update</td>
+              </tr>
+              <tr>
+                <td><span class="badge delete">DELETE</span></td>
+                <td><code>/api/accounts/:id</code></td>
+                <td>Soft-delete → status 3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <div class="section-inner">
+      <hr class="divider" />
+      <p class="section-label">Live Examples</p>
+      <div class="lang-grid">
+
+        <a class="lang-card" href="/nodejs/">
+          <span class="lang-icon">🟢</span>
+          <span class="lang-name">Node.js</span>
+          <span class="lang-stack">Express<br>pg</span>
+          <span class="lang-arrow">Open
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </span>
+        </a>
+
+        <a class="lang-card" href="/go/">
+          <span class="lang-icon">🐹</span>
+          <span class="lang-name">Go</span>
+          <span class="lang-stack">net/http<br>pgx/v5</span>
+          <span class="lang-arrow">Open
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </span>
+        </a>
+
+        <a class="lang-card" href="/java/">
+          <span class="lang-icon">☕</span>
+          <span class="lang-name">Java</span>
+          <span class="lang-stack">Spring Boot<br>JdbcTemplate</span>
+          <span class="lang-arrow">Open
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </span>
+        </a>
+
+        <a class="lang-card" href="/dotnet/">
+          <span class="lang-icon">💜</span>
+          <span class="lang-name">.NET</span>
+          <span class="lang-stack">ASP.NET Core<br>Npgsql</span>
+          <span class="lang-arrow">Open
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </span>
+        </a>
+
+        <a class="lang-card" href="/python/">
+          <span class="lang-icon">🐍</span>
+          <span class="lang-name">Python</span>
+          <span class="lang-stack">FastAPI<br>psycopg2</span>
+          <span class="lang-arrow">Open
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Shared PostgreSQL · <a href="/docs/">Course Docs</a> · DB port 5432
+  </footer>
+
+</body>
+
+</html>

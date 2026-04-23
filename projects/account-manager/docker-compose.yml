@@ -1,0 +1,127 @@
+version: '3.9'
+
+services:
+
+  # ── Shared PostgreSQL ─────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: testaccounts
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "1234"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # ── Viewer (docs browser) ─────────────────────────────────────────────────────
+  viewer:
+    build:
+      context: ../../viewer
+      dockerfile: Dockerfile
+    volumes:
+      - ../../:/data:ro
+    restart: unless-stopped
+
+  # ── nginx (single entry point on port 80) ────────────────────────────────────
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/index.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - nodejs-backend
+      - go-backend
+      - java-backend
+      - dotnet-backend
+      - python-backend
+      - viewer
+    restart: unless-stopped
+
+  # ── Node.js ───────────────────────────────────────────────────────────────────
+  nodejs-backend:
+    build:
+      context: ./nodejs
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testaccounts
+      DB_USER: postgres
+      DB_PASSWORD: "1234"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Go ────────────────────────────────────────────────────────────────────────
+  go-backend:
+    build:
+      context: ./go
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testaccounts
+      DB_USER: postgres
+      DB_PASSWORD: "1234"
+      FRONTEND_DIR: ./frontend
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Java ──────────────────────────────────────────────────────────────────────
+  java-backend:
+    build:
+      context: ./java/backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testaccounts
+      DB_USER: postgres
+      DB_PASSWORD: "1234"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── .NET ──────────────────────────────────────────────────────────────────────
+  dotnet-backend:
+    build:
+      context: ./dotnet/backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testaccounts
+      DB_USER: postgres
+      DB_PASSWORD: "1234"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Python ────────────────────────────────────────────────────────────────────
+  python-backend:
+    build:
+      context: ./python/backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testaccounts
+      DB_USER: postgres
+      DB_PASSWORD: "1234"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

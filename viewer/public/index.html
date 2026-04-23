@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Viewer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div id="sidebar-header">
+        <a href="/" id="home-btn" title="Back to home">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          Home
+        </a>
+        <div id="logo-mark">LV</div>
+        <div id="logo-text">Learning Viewer</div>
+      </div>
+      <nav id="tree"></nav>
+    </aside>
+
+    <div id="main">
+      <div id="topbar">
+        <span id="breadcrumb">Select a file</span>
+      </div>
+      <div id="content-area">
+        <div id="welcome">
+          <div class="welcome-bars">
+            <div class="welcome-bar"></div>
+            <div class="welcome-bar"></div>
+            <div class="welcome-bar"></div>
+            <div class="welcome-bar"></div>
+            <div class="welcome-bar"></div>
+          </div>
+          <h2>Learning Viewer</h2>
+          <p class="sub">Five language courses &middot; 11 lessons each &middot; Fullstack projects</p>
+          <div class="lang-pills">
+            <span>Java</span><span>Go</span><span>Node.js</span><span>.NET</span><span>Python</span>
+          </div>
+          <p class="hint">Select a lesson, reference doc, or project from the sidebar.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
